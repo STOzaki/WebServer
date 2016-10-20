@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * These are the specific java imports that are used in this program.
  */
 package server;
 import java.io.BufferedReader;
@@ -13,10 +11,14 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.StringTokenizer;
+import javax.swing.JLabel;
 
 /**
  *
  * @author nzooleh modified by Salem Ozaki.
+ * This simply reserves the port 6789 to listen.  Once a client
+ * uese TCP to connect, then the server accepts the connection, uses the method HttpRequest, makes a specific thread for
+ * that connection, and then continues to listen.
  * 
  * <h1>Location of the code:
  * <a href = "http://students.engr.scu.edu/~nzooleh/COEN146S05/lab3/WebServer.java"></a></h1>
@@ -30,19 +32,26 @@ public final class WebServer {
      * accept and the HttpRequest need the exception.
      */
     public static void main(String[] args) throws Exception{
+        
     //setting the port number.
     int port = 6789;
+    
+    //makes a socket with the port 6789.
     ServerSocket serversocket = new ServerSocket(port);
     while(true){
+        
         //Listening for a TCP connection request.
-    Socket clientSocket = serversocket.accept();
-    //Construct an object to process the HTTP request message.
-    HttpRequest request = new HttpRequest(clientSocket);
-    //Create a new thread to process the request.
-    Thread thread = new Thread(request);
-    //Start the thread.
-    thread.start();
-    } //while
+        Socket clientSocket = serversocket.accept();
+        
+        //Construct an object to process the HTTP request message.
+        HttpRequest request = new HttpRequest(clientSocket);
+        
+        //Create a new thread to process the request.
+        Thread thread = new Thread(request);
+        
+        //Start the thread.
+        thread.start();
+        } //while
     } //main()
     
 } //WebServer
@@ -58,10 +67,12 @@ public final class WebServer {
  */
 final class HttpRequest implements Runnable
 {
-    final static String CRLF = "\r\n";
+    final static String CRLF = "\r\n"; /*to move to the start of the line
+    and then move down a line.*/
+    
     Socket socket;
     
-    //Constructor
+    //Constructor that stores the connetion into socket.
     public HttpRequest(Socket connection) throws Exception
     {
         this.socket = connection;
@@ -94,17 +105,22 @@ final class HttpRequest implements Runnable
     private void processRequest() throws Exception
     {
         //Get a reference to the socket"s input and output streams
-        //InputStream input = this.socket.getInputStream();
         DataOutputStream out;
         out = new DataOutputStream(this.socket.getOutputStream());
+        
         //Set up input steam filters.
         BufferedReader buffer = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+        
         //Get the request line of the HTTP request message.
         String requestLine = buffer.readLine();
-        //Desplay the request line.
+        
+        //Display the request line.
         System.out.println();
         System.out.println(requestLine);
+        
         String headerLine = null;
+        
+        //Prints out the rest of the head.
         while((headerLine = buffer.readLine()).length() != 0){
             System.out.println(headerLine);
         } //while
@@ -113,7 +129,8 @@ final class HttpRequest implements Runnable
         StringTokenizer tokens = new StringTokenizer(requestLine);
         
         tokens.nextToken(); //skip over the method, which should be "GET".
-        String fileName = tokens.nextToken();
+        String fileName = tokens.nextToken(); /*grabs the filename which is
+        right after "GET" file.*/
         
         //Prepend a "." so that file request is within the current directory.
         fileName = "." + fileName;
@@ -121,7 +138,7 @@ final class HttpRequest implements Runnable
         //Open the requested file.
         FileInputStream fis = null;
         boolean fileExists = true;
-        try {
+        try { //makes sure that the file works.
             fis = new FileInputStream(fileName);
         } catch (FileNotFoundException e)
         {
@@ -188,21 +205,33 @@ final class HttpRequest implements Runnable
      * @return the type of application to use.
      */
     private static String contentType(String fileName) {
+        
+        //checks to see if the file is html or htm.
         if(fileName.endsWith(".htm") || fileName.endsWith(".html")) {
             return "text/html";
         } //if
+        
+        //checks to see if the file is jpg.
         if(fileName.endsWith(".jpg")) {
             return "image/jpg";
         } //if
+        
+        //checks to see if the file is png.
         if(fileName.endsWith(".png")) {
             return "image/png";
         } //if
+        
+        //checks to see if the file is a java.
         if(fileName.endsWith(".java")) {
             return "java file";
         } //if
+        
+        //checks to see if the file is gif.
         if(fileName.endsWith("gif")) {
             return "image/gif";
         } //if
+        
+        //by default it will return a binary version of a MIME-type.
         return "application/octet-stream";
     } //contentType(String)
 } //HttpRequest
