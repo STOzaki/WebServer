@@ -11,4 +11,7 @@ reference to socket's [input](https://github.com/STOzaki/WebServer/blob/master/s
 This method makes a [byte array](https://github.com/STOzaki/WebServer/blob/master/src/server/WebServer.java#L206) that contains 1024 bytes that will contain parts of the text.  Then, it sends the byte array through the [socket to the client](https://github.com/STOzaki/WebServer/blob/master/src/server/WebServer.java#L210).
 
 ### contentType
-This method takes the a file name and determines which application to use on the file requested
+[This method](https://github.com/STOzaki/WebServer/blob/master/src/server/WebServer.java#L232) takes the a file name and determines which application to use on the file requested.
+
+#### Credit
+[nzooleh](http://students.engr.scu.edu/~nzooleh/COEN146S05/lab3/WebServer.java)
