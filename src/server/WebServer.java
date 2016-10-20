@@ -169,8 +169,10 @@ final class HttpRequest implements Runnable
             out.writeBytes(CRLF);
             
             //Send the entity body and then closes the file.
-                sendBytes(fis,out);
-                fis.close();
+            sendBytes(fis,out);
+            
+            //Closes the FileInputStream to inspect a file.
+            fis.close();
                 
         } else { //gives an error if the file does not exist.
             statusLine = "ERROR, file not found:";
@@ -201,6 +203,15 @@ final class HttpRequest implements Runnable
         this.socket.close();
     } //processRequest()
     
+    
+    /**
+     * 
+     * @param fis file content that you want to send.
+     * @param out the socket's out stream that the data will go through.
+     * @throws Exception The program needs the exception for the InputStream.
+     * gets a file content and then sends that data through the socket's
+     * out stream.
+     */
     private static void sendBytes(FileInputStream fis, OutputStream out) throws Exception{
         //Construct a 1K buffer to hold bytes on their way to the socket.
         byte[] buffer = new byte[1024];
