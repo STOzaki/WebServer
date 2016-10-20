@@ -149,11 +149,14 @@ final class HttpRequest implements Runnable
         String statusLine = null;
         String contentTypeLine = null;
         String entityBody = null;
+        
+        //outputs the file content, otherwise outputs an error.
         if(fileExists) {
+            
             //Gives the status
             statusLine = "The file you requested is found:";
             out.writeBytes(statusLine);
-            
+            out.writeBytes(CRLF);
             
             /*combines them together that contains the content type and then
             goes to begining of the next line.*/
@@ -170,14 +173,25 @@ final class HttpRequest implements Runnable
                 fis.close();
                 
         } else { //gives an error if the file does not exist.
-            statusLine = "error not found";
-            entityBody = "There is no information because the file does not"
-                    + "exist.";
+            statusLine = "ERROR, file not found:";
+            
+            //Grabs the name of the file.
+            int file_start = fileName.indexOf("/");
+            int file_end = fileName.indexOf(".", file_start);
+            String file = fileName.substring(file_start + 1, file_end);
+            
+            //gets the directory.
+            FileInputStream directory = new FileInputStream("directory.txt");
+            
+            //stores the message into
+            entityBody = file + " does not exist!";
 
-            //Send a blank line to indicate the end of the header lines.
+            //Send an error header lines.
             out.writeBytes(statusLine);
             out.writeBytes(CRLF);
             out.writeBytes(entityBody);
+            out.writeBytes(CRLF);
+            sendBytes(directory,out);
         } //else
             
         
@@ -209,6 +223,11 @@ final class HttpRequest implements Runnable
         //checks to see if the file is html or htm.
         if(fileName.endsWith(".htm") || fileName.endsWith(".html")) {
             return "text/html";
+        } //if
+        
+        //checks to see if the file is txt.
+        if(fileName.endsWith(".txt")) {
+            return "text/txt";
         } //if
         
         //checks to see if the file is jpg.
