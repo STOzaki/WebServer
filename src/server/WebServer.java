@@ -193,6 +193,7 @@ final class HttpRequest implements Runnable
             out.writeBytes(CRLF);
             out.writeBytes(entityBody);
             out.writeBytes(CRLF);
+            out.writeBytes(CRLF);
             sendBytes(directory,out);
         } //else
             
@@ -229,7 +230,7 @@ final class HttpRequest implements Runnable
      * StringTokenizer and will be used to find what kind of application to use.
      * @return the type of application to use.
      */
-    private static String contentType(String fileName) {
+    public static String contentType(String fileName) {
         
         //checks to see if the file is html or htm.
         if(fileName.endsWith(".htm") || fileName.endsWith(".html")) {

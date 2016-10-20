@@ -18,15 +18,44 @@ public class HttpRequestTest {
     }
 
     /**
-     * Test of run method, of class HttpRequest.
+     * Test of contentType method, of class HttpRequest, to make sure
+     * that html or htm, txt, jpg, png, java, gif, and the default
+     * application/octet-stream.
      */
     @Test
-    public void testRun() {
-        System.out.println("run");
-        HttpRequest instance = null;
-        instance.run();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testContentType() {
+        String fileName = "website.html";
+        String expResult = "text/html";
+        String result = HttpRequest.contentType(fileName);
+        assertEquals(expResult, result);
+        fileName = "anotherwebsite.htm";
+        expResult = "text/html";
+        result = HttpRequest.contentType(fileName);
+        assertEquals(expResult, result);fileName = "directory.txt";
+        expResult = "text/txt";
+        result = HttpRequest.contentType(fileName);
+        assertEquals(expResult, result);
+        fileName = "picture.jpg";
+        expResult = "image/jpg";
+        result = HttpRequest.contentType(fileName);
+        assertEquals(expResult,result);
+        fileName = "differentPicture.png";
+        expResult = "image/png";
+        result = HttpRequest.contentType(fileName);
+        assertEquals(expResult,result);
+        fileName = "javaCode.java";
+        expResult = "java file";
+        result = HttpRequest.contentType(fileName);
+        assertEquals(expResult,result);
+        fileName = "oneLastPicture.gif";
+        expResult = "image/gif";
+        result = HttpRequest.contentType(fileName);
+        assertEquals(expResult,result);
+        fileName = "application.svg";
+        expResult = "application/octet-stream";
+        result = HttpRequest.contentType(fileName);
+        assertEquals(expResult,result);
     }
+    
     
 }
